@@ -41,11 +41,30 @@ b = params[1]
 
 # Plot ratio and fit
 plt.figure()
-plt.xlabel("Energy per nucleon (GeV/n)")
-plt.ylabel("Boron-to-Carbon Ratio")
+plt.xlabel("Energy per nucleon (GeV/n)", fontsize=13)
+plt.ylabel("Boron-to-Carbon Ratio", fontsize=13)
 plt.scatter(boron_energy, ratios, color='black')
-plt.errorbar(boron_energy, ratios, yerr=uncert, fmt='o', color='black', capsize=3)
-plt.plot(boron_energy, power_law(boron_energy,a,b), color='red')
+plt.errorbar(boron_energy, ratios, yerr=uncert, fmt='o', color='black', capsize=3, label="Data")
+plt.plot(boron_energy, power_law(boron_energy,a,b), color='red', label='Fit')
+plt.legend(fontsize=13)
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+plt.xscale("log")
+plt.yscale("log")
+plt.show()
+
+print(a,b)
+
+# Compute and plot Lambda_esc
+# Formula is derived in latex doc
+lambda_esc = [(16.21 * i)/(1 - 2.28 * i) for i in ratios]
+
+# Plot lambda_esc vs energy per nucleon
+# Plot ratio and fit
+plt.figure()
+plt.xlabel("Energy per nucleon (GeV/n)")
+plt.ylabel(r"$\lambda_{\rm{esc}}$ (g/cm$^2$)")
+plt.scatter(boron_energy, lambda_esc, color='black')
 plt.xscale("log")
 plt.yscale("log")
 plt.show()
