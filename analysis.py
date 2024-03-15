@@ -7,6 +7,7 @@ from scipy.optimize import curve_fit
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 rc('text', usetex=True)
 
+# ========================================== PROBLEM 1.1 ==========================================
 def read_data(element):
 
     data = np.genfromtxt("{}_data.dat".format(element))
@@ -38,46 +39,83 @@ params, covariance = curve_fit(power_law, boron_energy, ratios, maxfev=2000)
 # Extracting coefficients
 a = params[0]
 b = params[1]
+print(a, b)
 
+"""
 # Plot ratio and fit
 plt.figure()
-plt.xlabel("Energy per nucleon (GeV/n)", fontsize=13)
-plt.ylabel("Boron-to-Carbon Ratio", fontsize=13)
+plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
+plt.ylabel("Boron-to-Carbon Ratio", fontsize=14)
 plt.scatter(boron_energy, ratios, color='black')
 plt.errorbar(boron_energy, ratios, yerr=uncert, fmt='o', color='black', capsize=3, label="Data")
 plt.plot(boron_energy, power_law(boron_energy,a,b), color='red', label='Fit')
-plt.legend(fontsize=13)
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
+plt.legend(fontsize=14)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
 plt.xscale("log")
 plt.yscale("log")
 plt.show()
+"""
 
-print(a,b)
-
+# ========================================== PROBLEM 1.2 ==========================================
 # Compute and plot Lambda_esc
 # Formula is derived in latex doc
 lambda_esc = [(16.21 * i)/(1 - 2.28 * i) for i in ratios]
+lambda_uncert = uncert * (16.21 / ((1-2.28*ratios)**2))
 
-# Plot lambda_esc vs energy per nucleon
+ratio_fit = power_law(boron_energy,a,b)
+lambda_fit = 16.21 * ratio_fit / (1 - 2.28*ratio_fit)
+
+# Plot lambda_esc vs energy per nuclei
 # Plot ratio and fit
 plt.figure()
-plt.xlabel("Energy per nucleon (GeV/n)")
-plt.ylabel(r"$\lambda_{\rm{esc}}$ (g/cm$^2$)")
+plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
+plt.ylabel(r"$\lambda_{\rm{esc}}$ (g/cm$^2$)", fontsize=14)
 plt.scatter(boron_energy, lambda_esc, color='black')
+plt.errorbar(boron_energy, lambda_esc, yerr=lambda_uncert, fmt='o', color='black', capsize=3, label="Data")
+plt.plot(boron_energy, lambda_fit, color='red', label='Fit')
 plt.xscale("log")
-plt.yscale("log")
+plt.legend(fontsize=14)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.show()
+
+# ========================================== PROBLEM 1.3 ==========================================
+p_avg = 6 #g/cm3
+L_avg = [i / p_avg for i in lambda_esc] # cm
+L_uncert = [i / p_avg for i in lambda_uncert] 
+
+L_fit = lambda_fit / p_avg
+
+# Plot L_avg vs energy per nuclei
+# Plot ratio and fit
+plt.figure()
+plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
+plt.ylabel(r"$\bar{L}$ (cm)", fontsize=14)
+plt.scatter(boron_energy, L_avg, color='black')
+plt.errorbar(boron_energy, L_avg, yerr=L_uncert, fmt='o', color='black', capsize=3, label="Data")
+plt.plot(boron_energy, L_fit, color='red', label='Fit')
+plt.xscale("log")
+plt.legend(fontsize=14)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
 plt.show()
 
 """
+# ========================================== PROBLEM 1.5 ==========================================
+x = np.linspace(0, 100000000, 10000000)
+y = [0.45 * i**-0.35 for i in x]
+
+# Plot ratio and fit line
 plt.figure()
-plt.xlabel("Energy per nucleon (GeV/n)")
-plt.ylabel(r"Flux (GeV/n m$^{-2}$ sr$^{-1}$ s$^{-1}$)")
-plt.scatter(boron_energy, boron_flux, color='blue')
-plt.errorbar(boron_energy, boron_flux, yerr=boron_uncert, fmt='o', color='blue', capsize=3)
-plt.scatter(carbon_energy, carbon_flux, color='red')
-plt.errorbar(carbon_energy, carbon_flux, yerr=carbon_uncert, fmt='o', color='red', capsize=3)
+plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
+plt.ylabel("Boron-to-Carbon Ratio", fontsize=14)
+plt.scatter(boron_energy, ratios, color='black')
+plt.errorbar(boron_energy, ratios, yerr=uncert, fmt='o', color='black', capsize=3, label="Data")
+plt.plot(x,y, color='red', label='Fit')
+plt.legend(fontsize=14)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
 plt.xscale("log")
-plt.yscale("log")
-plt.show()
-"""
+plt.xlim(0,100000000)
+plt.show()"""
