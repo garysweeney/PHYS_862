@@ -65,7 +65,7 @@ lambda_uncert = uncert * (16.21 / ((1-2.28*ratios)**2))
 
 ratio_fit = power_law(boron_energy,a,b)
 lambda_fit = 16.21 * ratio_fit / (1 - 2.28*ratio_fit)
-
+"""
 # Plot lambda_esc vs energy per nuclei
 # Plot ratio and fit
 plt.figure()
@@ -79,14 +79,14 @@ plt.legend(fontsize=14)
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.show()
-
+"""
 # ========================================== PROBLEM 1.3 ==========================================
 p_avg = 6 #g/cm3
 L_avg = [i / p_avg for i in lambda_esc] # cm
 L_uncert = [i / p_avg for i in lambda_uncert] 
 
 L_fit = lambda_fit / p_avg
-
+"""
 # Plot L_avg vs energy per nuclei
 # Plot ratio and fit
 plt.figure()
@@ -100,6 +100,46 @@ plt.legend(fontsize=14)
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.show()
+
+"""
+# ========================================== PROBLEM 1.4 ==========================================
+# Fit power law for observed boron flux vs energy
+# Perform curve fitting
+boron_params, boron_covariance = curve_fit(power_law, boron_energy, boron_flux, maxfev=2000)
+
+# Extracting coefficients
+a_boron = boron_params[0]
+b_boron = boron_params[1]
+print(a_boron, b_boron)
+
+# Fit power law for observed carbon flux vs energy
+# Perform curve fitting
+carbon_params, carbon_covariance = curve_fit(power_law, carbon_energy, carbon_flux, maxfev=2000)
+
+# Extracting coefficients
+a_carbon = carbon_params[0]
+b_carbon = carbon_params[1]
+print(a_carbon, b_carbon)
+
+# Plot boron and carbon flux
+plt.figure()
+plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
+plt.ylabel("Observed Flux", fontsize=14)
+plt.scatter(boron_energy, boron_flux, color='blue')
+plt.errorbar(boron_energy, boron_flux, yerr=boron_uncert, fmt='o', color='blue', capsize=3, label="Boron")
+plt.plot(boron_energy, power_law(boron_energy, a_boron, b_boron), color='blue')
+plt.scatter(carbon_energy, carbon_flux, color='red')
+plt.errorbar(carbon_energy, carbon_flux, yerr=carbon_uncert, fmt='o', color='red', capsize=3, label="Carbon")
+plt.plot(carbon_energy, power_law(carbon_energy, a_carbon, b_carbon), color='red')
+plt.legend(fontsize=14)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.xscale("log")
+plt.yscale("log")
+plt.show()
+
+
+
 
 """
 # ========================================== PROBLEM 1.5 ==========================================
@@ -118,4 +158,5 @@ plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.xscale("log")
 plt.xlim(0,100000000)
-plt.show()"""
+plt.show()
+"""
