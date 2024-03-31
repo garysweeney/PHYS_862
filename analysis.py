@@ -81,17 +81,21 @@ plt.yticks(fontsize=14)
 plt.show()
 """
 # ========================================== PROBLEM 1.3 ==========================================
-p_avg = 6 #g/cm3
+p_avg = 1.67e-24 #1 H/cm3 --> g/cm3
 L_avg = [i / p_avg for i in lambda_esc] # cm
+L_avg = [i/3.086e24 for i in L_avg]
+
 L_uncert = [i / p_avg for i in lambda_uncert] 
+L_uncert = [i / 3.086e24 for i in L_uncert]
 
 L_fit = lambda_fit / p_avg
+L_fit = [i/3.086e24 for i in L_fit]
 """
 # Plot L_avg vs energy per nuclei
 # Plot ratio and fit
 plt.figure()
 plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
-plt.ylabel(r"$\bar{L}$ (cm)", fontsize=14)
+plt.ylabel(r"$\bar{L}$ (MPc)", fontsize=14)
 plt.scatter(boron_energy, L_avg, color='black')
 plt.errorbar(boron_energy, L_avg, yerr=L_uncert, fmt='o', color='black', capsize=3, label="Data")
 plt.plot(boron_energy, L_fit, color='red', label='Fit')
@@ -100,63 +104,42 @@ plt.legend(fontsize=14)
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.show()
-
 """
 # ========================================== PROBLEM 1.4 ==========================================
 # Fit power law for observed boron flux vs energy
 # Perform curve fitting
-boron_params, boron_covariance = curve_fit(power_law, boron_energy, boron_flux, maxfev=2000)
+# Fit for energies up to 200 GeV/n
+fit_energy = boron_energy[np.where(boron_energy < 200000)]
+fit_flux = boron_flux[np.where(boron_energy < 20000)]
+boron_params, boron_covariance = curve_fit(power_law, fit_energy, fit_flux, maxfev=2000)
 
 # Extracting coefficients
 a_boron = boron_params[0]
 b_boron = boron_params[1]
 print(a_boron, b_boron)
-
-# Fit power law for observed carbon flux vs energy
-# Perform curve fitting
-carbon_params, carbon_covariance = curve_fit(power_law, carbon_energy, carbon_flux, maxfev=2000)
-
-# Extracting coefficients
-a_carbon = carbon_params[0]
-b_carbon = carbon_params[1]
-print(a_carbon, b_carbon)
-
+"""
 # Plot boron and carbon flux
 plt.figure()
 plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
 plt.ylabel("Observed Flux", fontsize=14)
-plt.scatter(boron_energy, boron_flux, color='blue')
-plt.errorbar(boron_energy, boron_flux, yerr=boron_uncert, fmt='o', color='blue', capsize=3, label="Boron")
-plt.plot(boron_energy, power_law(boron_energy, a_boron, b_boron), color='blue')
-plt.scatter(carbon_energy, carbon_flux, color='red')
-plt.errorbar(carbon_energy, carbon_flux, yerr=carbon_uncert, fmt='o', color='red', capsize=3, label="Carbon")
-plt.plot(carbon_energy, power_law(carbon_energy, a_carbon, b_carbon), color='red')
+plt.scatter(boron_energy, boron_flux, color='black')
+plt.errorbar(boron_energy, boron_flux, yerr=boron_uncert, fmt='o', color='black', capsize=3, label="Boron")
+
+plt.plot(boron_energy, power_law(boron_energy, a_boron, b_boron), color='red')
 plt.legend(fontsize=14)
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.xscale("log")
 plt.yscale("log")
 plt.show()
-
-
-
-
 """
+
 # ========================================== PROBLEM 1.5 ==========================================
-x = np.linspace(0, 100000000, 10000000)
-y = [0.45 * i**-0.35 for i in x]
+energy = np.linspace(10, 1000000, 1000000001)
+ratio = [0.46 * i**(-0.35) for i in energy]
+lambda_carbon = [(16.28 * i) / (1 - 2.283 * i) for i in ratio]
 
-# Plot ratio and fit line
-plt.figure()
-plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
-plt.ylabel("Boron-to-Carbon Ratio", fontsize=14)
-plt.scatter(boron_energy, ratios, color='black')
-plt.errorbar(boron_energy, ratios, yerr=uncert, fmt='o', color='black', capsize=3, label="Data")
-plt.plot(x,y, color='red', label='Fit')
-plt.legend(fontsize=14)
-plt.xticks(fontsize=14)
-plt.yticks(fontsize=14)
+print(np.where(lambda_carbon == 0.167))
+plt.plot(energy, lambda_carbon)
 plt.xscale("log")
-plt.xlim(0,100000000)
 plt.show()
-"""
