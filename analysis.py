@@ -135,11 +135,20 @@ plt.show()
 """
 
 # ========================================== PROBLEM 1.5 ==========================================
-energy = np.linspace(10, 1000000, 1000000001)
+energy = np.linspace(10, 1000000, 10001)
 ratio = [0.46 * i**(-0.35) for i in energy]
 lambda_carbon = [(16.28 * i) / (1 - 2.283 * i) for i in ratio]
 
 print(np.where(lambda_carbon == 0.167))
-plt.plot(energy, lambda_carbon)
+
+plt.xlabel("Energy per nuclei (GeV/n)", fontsize=14)
+plt.ylabel(r"$\lambda_{\rm{esc}}$ (g/cm$^2$)", fontsize=14)
+plt.errorbar(boron_energy, lambda_esc, yerr=lambda_uncert, fmt='o', color='black', capsize=3, label="Data")
+plt.plot(energy, lambda_carbon, color="red", label="Fit")
+plt.axhline(y=0.167, label=r"$\lambda_{\rm{Galaxy}}$", color="blue", linestyle="--")
+plt.legend(fontsize=14)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
 plt.xscale("log")
+plt.yscale("log")
 plt.show()
